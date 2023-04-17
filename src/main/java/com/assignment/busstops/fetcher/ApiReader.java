@@ -1,6 +1,8 @@
 package com.assignment.busstops.fetcher;
 
 import com.assignment.busstops.model.BusLine;
+import com.assignment.busstops.model.BusLine.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -18,7 +20,7 @@ public class ApiReader implements Function<String, BusLine> {
         String url = baseURL + busLine;
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         if(HttpStatus.OK.equals(response.getStatusCode())) {
-            return new BusLine(busLine, response.getBody());
+            return new BusLine(busLine, response.getBody().transform(body -> asList(new BusStop(body))));
         } else {
             return new BusLine("BusLine couldn't be fetched", asList());
         }
