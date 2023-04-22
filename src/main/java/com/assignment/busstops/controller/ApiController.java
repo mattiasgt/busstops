@@ -50,7 +50,7 @@ public class ApiController {
     public List<TravelLine> longest(@RequestParam(value = "type") String type, @RequestParam(value = "size") Integer size) {
         LineResult journeys = query(type, JOURNEY_PATTERN, LineResponseData.class).result();
         StopResult stopNames = query(type, STOPS, StopResponseData.class).result();
-        Stream<TravelLine> lines = travelLinesOf(journeys, stopNames, size);
+        Stream<TravelLine> lines = travelLinesOf(journeys, stopNames);
 
         return selector.apply(size).apply(lines).collect(toList());
     }

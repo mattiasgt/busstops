@@ -22,7 +22,7 @@ public record TravelLine(String lineName, List<String> stops) {
      * @param stopResult StopResult listing stop ids and their corresponding name
      * @return Stream of TravelLine objects.
      */
-    public static Stream<TravelLine> travelLinesOf(LineResult lineResult, StopResult stopResult, Integer size) {
+    public static Stream<TravelLine> travelLinesOf(LineResult lineResult, StopResult stopResult) {
         //Map containing the bus stop ids and their names
         Map<String, String> stopNames = stopResult.stops()
                 .stream()
