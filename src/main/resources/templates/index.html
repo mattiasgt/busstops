@@ -1,0 +1,92 @@
+<html>
+<head>
+    <style>
+      table, th, td {
+         border-collapse: collapse;
+         float:left;
+         padding-right: 10px;
+      }
+      td, th {
+         padding: 10px;
+      }
+      number {
+        width: 60px;
+      }
+
+   </style>
+</head>
+<body>
+<h2>Travel Lines longest route selector</h2>
+<p>This tool queries an API containing SL route information and selects the longest routes and displays them below</p>
+<p>Note: The travel types Metro, Train, Tram, Ship and Ferry are experimental, and may not always display the names correctly, due to peculiarities in the API.
+    <br/>
+    Loading of data may take a few seconds.
+</p>
+<br>
+
+<input type="radio" id="type_bus" name="travel_type" value="BUS" checked="checked"/>
+<label for="type_bus">Bus</label>
+<input type="radio" id="type_metro" name="travel_type" value="METRO" />
+<label for="type_metro">Metro</label>
+<input type="radio" id="type_tram" name="travel_type" value="TRAM" />
+<label for="type_tram">Tram</label>
+<input type="radio" id="type_train" name="travel_type" value="TRAIN" />
+<label for="type_train">Train</label>
+<input type="radio" id="type_ship" name="travel_type" value="SHIP" />
+<label for="type_ship">Ship</label>
+<input type="radio" id="type_ferry" name="travel_type" value="FERRY" />
+<label for="type_ferry">Ferry</label>
+<br/>
+<label for="size">Size</label>
+<input name="size" type="number" maxlength="2" id="size" value="5"/>
+<button id="btn" onclick="execute()"> Fetch data </button> <br>
+<h3> Longest Lines: </h3>
+<div id="container"></div>
+<script>
+    function execute() {
+        var type = document.querySelector("input[name=travel_type]:checked").value;
+        var size = document.getElementById("size").value;
+        let url = '/longest?type=' + type + '&size=' + size;
+        //Query the URL
+        fetch(url)
+        .then(function(response) {
+            // Parse the body as JSON
+            return response.json();
+        })
+        .then(function(json) {
+            // Render the parsed body
+            fillTable(json);
+        })
+    }
+
+    // Function to convert JSON data to HTML tables
+    function fillTable(jsonData) {
+        let travelType = document.querySelector("input[name=travel_type]:checked").value;
+        let container = document.getElementById("container");
+        container.innerHTML = "";
+
+        jsonData.forEach((item) => {
+            let table = document.createElement("table");
+            let thead = document.createElement("thead");
+            let tr = document.createElement("tr");
+
+            let th = document.createElement("th");
+            th.innerText = item.lineName + " (" + item.stops.length + " stops)";
+            tr.appendChild(th);
+
+            thead.appendChild(tr);
+            table.append(tr);
+
+            item.stops.forEach((stop) => {
+                let tr = document.createElement("tr");
+                let td = document.createElement("td");
+                td.innerText = stop;
+                tr.appendChild(td);
+                table.appendChild(tr);
+            });
+            container.appendChild(table)
+        });
+    }
+   </script>
+</body>
+</html>
